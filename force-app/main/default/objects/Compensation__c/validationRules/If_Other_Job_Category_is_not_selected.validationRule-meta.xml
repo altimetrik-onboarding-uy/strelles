@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>If_Other_Job_Category_is_not_selected</fullName>
+    <active>true</active>
+    <description>While the option &quot;Other&quot; is NOT selected in the Job Category picklist</description>
+    <errorConditionFormula>AND (NOT(ISPICKVAL( Job_Category__c , &#39;Other&#39;)),NOT( ISBLANK( Other__c)))</errorConditionFormula>
+    <errorDisplayField>Other__c</errorDisplayField>
+    <errorMessage>This field can not have text if the Option Is not Other in the JobCategory is Other</errorMessage>
+</ValidationRule>
