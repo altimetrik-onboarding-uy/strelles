@@ -1,0 +1,22 @@
+@isTest
+private class SubmitCompensations_Schedule_Test {
+ // Seconds Minutes Hours Day_of_month Month Day_of_week optional_year
+ public static String schedule = '0 21 10 * * ?';
+    
+    static Compensation__c compensation;    
+    
+    static testmethod void testSubmitCompensations_ScheduleJob(){
+    	compensation = TestCompensationDataFactory.createCompensations(5)[0];     
+        insert compensation;
+        
+        system.debug('Compensation Id'+ compensation.id);
+        system.debug('Compensation Location__c'+ compensation.Location__c);
+        system.debug('Compensation Office__c '+ compensation.Office__c);
+        system.debug('Compensation RecordTypeId '+ compensation.RecordTypeId);
+  
+        Test.startTest();
+        String jobId = System.schedule('ScheduledApexTest',schedule,new SubmitCompensations_Schedule());         
+        Test.stopTest();
+        
+    }
+}

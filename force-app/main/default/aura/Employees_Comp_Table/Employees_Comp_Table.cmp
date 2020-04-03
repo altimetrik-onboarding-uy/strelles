@@ -1,0 +1,93 @@
+<aura:component implements="force:appHostable" controller="customCompensationTableController">
+	
+    <aura:handler name="init" value="{!this}" action ="{!c.doInit}" />
+    <aura:attribute name="allCompensations" type="Compensation__c[]" />
+	 
+	<div class="slds-grid slds-grid_vertical">
+       <div class="slds-col">
+        	<div class="slds-grid slds-wrap">
+                <lightning:card title="Select Compensation Type" class="slds-size_4-of-12 slds-large-size_4-of-12 slds-m-bottom_large">
+                    <lightning:select aura:id="select" name="select" onchange="{! c.onChange }">
+                            <option value="">All Compensations</option>
+                            <option value="Salary">Salary</option>
+                            <option value="Study">Study</option>
+                            <option value="Research">Research</option>
+                    </lightning:select>
+                </lightning:card>
+           </div>
+        </div>
+        
+		<div class="slds-col">
+        	<div class="slds-grid slds-wrap">
+            	<lightning:card title="Custom Data Table" class="slds-col slds-size_12-of-12 slds-large-size_12-of-12 slds-scrollable">
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                        <thead>
+                            <tr class="slds-text-title_caps">
+                                <th class="slds-text-title_caps slds-text-align_center" scope="col">
+                                    <div class="slds-truncate" title="Name">Employee Name</div>
+                                </th>
+                                <th class="slds-text-title_caps slds-text-align_center" scope="col">
+                                    <div class="slds-truncate" title="Name">Birthdate</div>           
+                                </th>
+                                <th class="slds-text-title_caps slds-text-align_center" scope="col">
+                                    <div class="slds-truncate" title="Name">Job Category</div>
+                                </th>
+                                <th class="slds-text-title_caps slds-text-align_center" scope="col">
+                                    <div class="slds-truncate" title="Name">Compensation Type</div>
+                                </th>
+                                <th class="slds-text-title_caps slds-text-align_center" scope="col">
+                                    <div class="slds-truncate" title="Name">Amount</div>
+                                </th>
+                                <th class="slds-text-title_caps slds-text-align_center" scope="col">
+                                    <div class="slds-truncate" title="Name">Location</div>
+                                </th>
+                                <th class="slds-text-title_caps slds-text-align_center" scope="col">
+                                    <div class="slds-truncate" title="Name">Office</div>
+                                </th>
+                                <th class="slds-text-title_caps slds-text-align_center" scope="col">
+                                    <div class="slds-truncate" title="Name">Submitted</div>
+                                </th>
+                                <th class="slds-text-title_caps slds-text-align_center" scope="col">
+                                    <div class="slds-truncate" title="Name">Status</div>
+                                </th>
+                            </tr>
+                        </thead>
+                     <tbody>
+                        		<aura:iteration items="{! v.allCompensations}" var="compensation" aura:id="data">
+                                    <tr class="slds-text-align_center">
+                                        <th data-label="Employee Name" scope="row" class="slds-text-align_center" >
+                                            <lightning:button variant="base" label="{! compensation.Contact__r.Name}" title="Base action" onclick="{!c.editEmp}" value="{! compensation.Contact__r.Id}"/>
+                                        </th>
+                                        <th data-label="Employee Birthdate" scope="row" class="slds-text-align_center">     
+                                        <ui:outputDate format="MMMM dd, yyyy" value="{! compensation.Contact__r.Birthdate}"/>
+                                        </th>
+                                        <th data-label="Job Category" scope="row" class="slds-text-align_center">
+                                            <ui:outputText value="{! compensation.Job_Category__c}"/>
+                                        </th>
+                                        <th data-label="Record Type" scope="row" class="slds-text-align_center">
+                                            <ui:outputText value="{! compensation.RecordType.Name}"/>
+                                        </th>
+                                        <th data-label="Compensation Amount" scope="row" class="slds-text-align_center">
+                                            <ui:outputText value="{! compensation.Amount__c}"/>
+                                        </th>
+                                        <th data-label="Compensation Location" scope="row" class="slds-text-align_center">
+                                            <ui:outputText value="{! compensation.Location__c}"/>
+                                        </th>
+                                        <th data-label="Compensation Office" scope="row" class="slds-text-align_center">
+                                            <ui:outputText value="{! compensation.Office__c}"/>
+                                        </th>
+                                        <th data-label="Compensation Submitted" scope="row" class="slds-text-align_center">
+                                            <div class="slds-truncate" title="Submitted">{! compensation.Submitted__c}</div>
+                                        </th>
+                                        <th data-label="Compensation Status" scope="row" class="slds-text-align_center">
+                                            <ui:outputText value="{! compensation.Status__c}"/>
+                                        </th>
+                                	</tr> 
+                            	</aura:iteration>
+                        	</tbody>
+                    	</table>
+             	</lightning:card>
+       		</div>
+   		</div>
+    </div>
+</aura:component>
