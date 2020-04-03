@@ -1,0 +1,14 @@
+@isTest
+public class SubmitCompensations_Batch_Test {
+
+	static Compensation__c compensation;
+    
+    static testMethod void createCompensationsTest() {
+        compensation = TestCompensationDataFactory.createCompensations(1)[0];        
+		insert compensation;
+        Test.startTest();
+        SubmitCompensations_Batch SCB = new SubmitCompensations_Batch();
+        Id batchId = Database.executeBatch(SCB);
+        Test.stopTest();    
+   	 }
+}
