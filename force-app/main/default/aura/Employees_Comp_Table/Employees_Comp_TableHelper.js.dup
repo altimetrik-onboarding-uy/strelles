@@ -1,0 +1,128 @@
+({
+	doInit : function(component,event) {
+	var action = component.get("c.fetchCompensation");
+        action.setCallback(this, function(response){
+      	var state = response.getState();
+        if (state === "SUCCESS"){
+            component.set("v.allCompensations", response.getReturnValue());
+        }else if (state === "ERROR"){
+            var errors = response.getError();
+            if(errors){
+                if(errors[0]){
+                    console.log("Error message: " + errors[0].message);
+                }
+            }else{
+                console.log("Unknown error");
+            	}
+        	}
+        });
+        $A.enqueueAction(action);
+	},
+    
+     onChange: function (component,event) {
+    	var action = component.get("c.fetchCompensationType");
+        action.setParams({sRecordType: component.find('selectType').get('v.value'), sRecordSubmitted: component.find('sRecordSubmitted').get('v.value')});
+    	action.setCallback(this, function(response) {
+        var state = response.getState();
+        if (state === "SUCCESS" ) {
+            component.set("v.allCompensations", response.getReturnValue());
+        }else if (state === "ERROR"){
+            var errors = response.getError();
+            if(errors){
+                if(errors[0]){
+                    console.log("Error message: " + errors[0].message);
+                }
+            }else{
+                console.log("Unknown error");
+            	}
+        	}
+    	});
+         $A.enqueueAction(action);
+	},
+    
+    submitCompensation : function(component, event) { 
+            var action = component.get("c.submitCompensations");
+        	action.setParams({sCompensationList: component.get("v.selectedCompensations")});
+    		action.setCallback(this, function(response) {
+        	var state = response.getState();
+        	if (state === "SUCCESS" ) {
+            	component.set("v.allCompensations", response.getReturnValue());
+        	}else if (state === "ERROR"){
+            	var errors = response.getError();
+            	if(errors){
+               		if(errors[0]){
+                    	console.log("Error message: " + errors[0].message);
+                	}
+            	}else{
+                	console.log("Unknown error");
+            	}
+        	}
+    	});
+         $A.enqueueAction(action);
+    },
+ 
+    metodoHelperParaRefresh : function (component, compensationSelected, compensationList){
+        // get index of compensation with id "n"
+        var removeIndex = compensationList.map(function(item) { return item.id; }).indexOf(compensationSelected.Id);
+        // remove object
+        compensationList.splice(removeIndex, 1);
+    },
+    
+    convertArrayOfObjectsToCSV : function(component,objectRecords){
+        // declare variables
+        var csvStringResult, counter, compensationKeys, columnDivider, lineDivider;
+       
+        // check if "objectRecords" parameter is null, then return from function
+        if (objectRecords == null || !objectRecords.length) {
+            return null;
+         }
+        // store ,[comma] in columnDivider variabel for sparate CSV values and 
+        // for start next line use '\n' [new line] in lineDivider varaible  
+        columnDivider = ',';
+        lineDivider =  '\n';
+ 
+        //in the keys store fields API Names as a key  
+        compensationKeys = ['Contact__r.Name', 'Contact__r.Birthdate', 'Job_Category__c', 'RecordType.Name', 'Amount__c', 'Location__c', 'Office__c', 'Submitted__c', 'Status__c'];
+      
+        //this labels use in CSV file header. Put them in same sequence as API Names 
+       	var keyLabel = ['Contact Name', 'Contact Birthdate', 'Job Category', 'RecordType', 'Amount', 'Location', 'Office', 'Submitted', 'Status']; 
+
+        csvStringResult = '';
+        csvStringResult += keyLabel.join(columnDivider); 
+        csvStringResult += lineDivider;
+ 
+        for(var i=0; i < objectRecords.length; i++){   
+            counter = 0;
+             for(var sTempkey in compensationKeys) {
+                var skey = compensationKeys[sTempkey] ;  
+                //add , [comma] after every String value,. [except first]
+                  if(counter > 0){ 
+                      csvStringResult += columnDivider; 
+                   }   
+              		//split the skey for the cases like Contact__r.Name
+              		//if the sKeyCombinated has more than one element it goes to the first if
+                    var sKeyCombinated = skey.split(".");
+                 	if(sKeyCombinated.length > 1){
+                     if(!$A.util.isUndefined(objectRecords[i][sKeyCombinated[0]][sKeyCombinated[1]]) && !$A.util.isEmpty(objectRecords[i][sKeyCombinated[0]][sKeyCombinated[1]])) {
+                         csvStringResult += '"'+ objectRecords[i][sKeyCombinated[0]][sKeyCombinated[1]] +'"';
+                     } else { 
+                    csvStringResult += '"'+' '+'"'; 
+                   }
+                 }else{
+                  // if the sKeyCombinated is only one element we can keep using skey this if for cases like Amount__c
+                  if(!$A.util.isUndefined(objectRecords[i][skey]) && !$A.util.isEmpty(objectRecords[i][skey])) {                    
+                       csvStringResult += '"'+ objectRecords[i][skey]+'"'; 
+                   } else { 
+                    csvStringResult += '"'+' '+'"'; 
+                   }   
+                 }       
+               counter++;
+            } // inner for loop close 
+             csvStringResult += lineDivider;
+          }// outer main for loop close 
+       
+       // return the CSV formate String 
+        return csvStringResult;        
+    },
+   
+})

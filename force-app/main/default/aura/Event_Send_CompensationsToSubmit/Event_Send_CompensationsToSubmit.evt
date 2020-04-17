@@ -1,0 +1,4 @@
+<aura:event type="COMPONENT" description="Event template">                                         
+<aura:attribute name="compensation" type="Compensation__c" access="GLOBAL"/>
+<aura:attribute name="flag" type="boolean" access="GLOBAL" />      
+</aura:event>
