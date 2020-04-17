@@ -1,0 +1,51 @@
+public class customCompensationTableController {
+    @AuraEnabled
+    public static Compensation__c[] fetchCompensation(){
+        Compensation__c[] compReturn = new Compensation__c[]{};
+        compReturn =  [SELECT Contact__r.Id, Contact__r.Name, Contact__r.Birthdate, Job_Category__c, RecordType.Name, Amount__c, Location__c, 
+                       Office__c, Submitted__c, Status__c FROM Compensation__c];
+        return compReturn ;
+    }
+
+    @AuraEnabled
+    public static Compensation__c[] fetchCompensationType(String sRecordType, String sRecordSubmitted){
+      System.debug('The type is: ' + sRecordType);
+	  System.debug('The status is : ' + sRecordSubmitted);
+       // Return all compensation when no search term
+        sRecordType = sRecordType.trim();
+        sRecordSubmitted = String.valueOf(sRecordSubmitted);
+         
+        //Prepare query paramters
+        sRecordType = '%'+ sRecordType +'%';
+ 		//If type have is not empty and status is
+        if(sRecordType != '' && sRecordSubmitted == ''){
+            //Execute search query
+            return [SELECT Id, Contact__r.Id, Contact__r.Name, Contact__r.Birthdate, Job_Category__c, RecordType.Name, Amount__c, 
+            Location__c, Office__c, Submitted__c, Status__c FROM Compensation__c WHERE RecordType.Name LIKE :sRecordType];
+        }
+        //If type have is empty status is not
+        if(sRecordType == '' && sRecordSubmitted != ''){
+            //Execute search query
+            return [SELECT Contact__r.Id, Contact__r.Name, Contact__r.Birthdate, Job_Category__c, RecordType.Name, Amount__c, 
+            Location__c, Office__c, Submitted__c, Status__c FROM Compensation__c WHERE Submitted__c = :Boolean.valueOf(sRecordSubmitted)];
+         }
+         //If both of them arent empty
+        if(sRecordType != '' && sRecordSubmitted != ''){
+            //Execute search query
+            return [SELECT Contact__r.Id, Contact__r.Name, Contact__r.Birthdate, Job_Category__c, RecordType.Name, Amount__c, 
+            Location__c, Office__c, Submitted__c, Status__c FROM Compensation__c WHERE RecordType.Name LIKE :sRecordType AND Submitted__c = :Boolean.valueOf(sRecordSubmitted)];  
+        }
+        //If both if them are empty
+        return fetchCompensation();
+    }
+    
+    @AuraEnabled
+    public static Compensation__c[] submitCompensations(Compensation__c[] sCompensationList){        
+      for (Compensation__c compensation : sCompensationList) {
+           compensation.Submitted__c = True;
+           //System.debug('The type is:' + compensation.Id + ' - ' + compensation.Submitted__c);
+        }
+        update sCompensationList;
+        return fetchCompensation();
+    }
+ }
