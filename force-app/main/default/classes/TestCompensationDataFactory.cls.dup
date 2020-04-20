@@ -1,0 +1,101 @@
+public abstract class TestCompensationDataFactory {
+    
+    public static Account createAccount(){
+    // Add account and related contact
+    Account acct = new Account(
+        Name='Compensation Account',
+        Phone='(123) 481-5141',
+        NumberOfEmployees=50,
+        BillingCity='Montevideo');
+    insert acct; 
+    return acct;
+    }
+    
+    //Contact creation
+    public static Contact createContact(){
+    Account acct = createAccount();
+    ID acctID = acct.ID;
+    // Add a contact to this account.
+    Contact con = new Contact(
+        FirstName='Esteban',
+        LastName='Quito',
+        Phone='(222)111-2121',
+        Department='Montevideo',
+        AccountId=acctID);
+     insert con;
+     return con;
+     } 
+    
+    //Compensation creation
+    public static List<Compensation__c> createCompensations(Integer numberOfCompensations) {
+        List<Compensation__c> compensations = new List<Compensation__c>();
+		Contact con = createContact();
+        for (Integer i = 0 ; i < numberOfCompensations ; i++) {
+            String location = rLocation();
+            Compensation__c comp = new Compensation__c(RecordTypeId = rRecordType(),
+        											  	Name = 'Test Comp' + i,
+                                                       	Contact__c = con.Id,
+                                                        Location__c = location,
+                                                        Office__c = rOffice(location),
+                                                        Job_Category__c = 'Junior',
+                                                        Description__c = 'Desc Comp' + i );
+            compensations.add(comp);
+        }
+      insert compensations;
+      return compensations;
+            
+    }
+    
+    public static String rRecordType(){
+        String recordType = '';
+        Integer randomNumber = Integer.valueof((Math.random() * 2));
+        switch on randomNumber {
+            when 0 {
+                recordType = '0123h000000H5sIAAS';
+            }
+            when 1 {
+                recordType = '0123h000000H5smAAC';
+            }
+            when 2{
+                recordType = '0123h000000H5sNAAS';
+            }
+        }  
+ 		system.debug('Record Type Generated'+ recordType);
+        return recordType;
+    }
+    
+    public static String rLocation(){
+        String location = '';
+        Integer randomNumber = Integer.valueof((Math.random() * 2));
+        switch on randomNumber {
+            when 0 {
+                location = 'India';
+            }
+            when 1 {
+                location = 'Uruguay';
+            }
+            when 2{
+                location = 'US';
+            }
+        }
+        
+        return location;
+    }
+    
+    public static String rOffice(String sLocation){
+        String office = '';
+        switch on sLocation {
+            when 'India' {
+                office = 'Chennai';
+            }
+            when 'Uruguay' {
+                office = 'MVD WTC 2';
+            }
+            when 'US'{
+                office = 'Michigan';
+            }
+        }
+        return office;
+    }
+
+}

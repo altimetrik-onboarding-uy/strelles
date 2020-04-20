@@ -1,0 +1,91 @@
+<aura:component implements="force:appHostable" controller="customCompensationTableController">
+	
+    <aura:handler name="init" value="{!this}" action ="{!c.doInit}" />
+     <aura:handler action="{!c.handleNotification}" event="c:Event_Send_CompensationsToSubmit" name="compensationEvent"/>
+
+    <aura:attribute name="allCompensations" type="Compensation__c[]" />
+    <aura:attribute name="selectedCompensations" type="Compensation__c[]" />
+      
+	<div class="slds-grid slds-grid_vertical">
+       		<div class="slds-grid slds-gutters slds-m-bottom_large">
+        	<div class="slds-col ">
+                <lightning:card title="Select Compensation Type" >
+                    <div class="slds-col"> 
+                    <lightning:select aura:id="selectType" onchange="{!c.onChange}">
+                            <option value="">All Compensations</option>
+                            <option value="Salary">Salary</option>
+                            <option value="Study">Study</option>
+                            <option value="Research">Research</option>
+                    </lightning:select>
+                    </div>
+                </lightning:card>
+        	</div>           
+           <div class="slds-col">
+                <lightning:card title="Select Submitted">
+                    <div class="slds-col ">
+                    <lightning:select aura:id="sRecordSubmitted" onchange="{!c.onChange}">
+                            <option value="">All Compensations</option>
+                            <option value="true">Submitted</option>
+                            <option value="false">Not Submitted</option>
+                    </lightning:select>
+                  </div>
+                </lightning:card>
+        </div>
+       </div>
+        <div class="slds-grid slds-gutters slds-m-bottom_large">
+            <div calss="slds-col">
+                   <button class="slds-button slds-button_brand slds-m-left_small" onclick="{!c.submitCompensation}">Submit</button>
+            </div>
+            <div calss="slds-col">
+                   <button class="slds-button slds-button_brand slds-m-left_small" onclick="{!c.downloadCsv}">Export</button>
+            </div>
+        </div>
+		<div class="slds-col">
+        	<div class="slds-grid slds-wrap slds-m-bottom_large">
+            	<lightning:card title="Custom Data Table" class="slds-col slds-size_12-of-12 slds-large-size_12-of-12 slds-scrollable">
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                        <thead>
+                            <tr class="slds-text-title_caps">
+                                <th class="slds-text-title_caps slds-text-align_center" scope="col">
+                                    <div class="slds-truncate" title="Employee Name">Employee Name</div>
+                                </th>
+                                <th class="slds-text-title_caps slds-text-align_center" scope="col">
+                                    <div class="slds-truncate" title="Birthdate">Birthdate</div>           
+                                </th>
+                                <th class="slds-text-title_caps slds-text-align_center" scope="col">
+                                    <div class="slds-truncate" title="Job Category">Job Category</div>
+                                </th>
+                                <th class="slds-text-title_caps slds-text-align_center" scope="col">
+                                    <div class="slds-truncate" title="Compensation Type">Compensation Type</div>
+                                </th>
+                                <th class="slds-text-title_caps slds-text-align_center" scope="col">
+                                    <div class="slds-truncate" title="Amount">Amount</div>
+                                </th>
+                                <th class="slds-text-title_caps slds-text-align_center" scope="col">
+                                    <div class="slds-truncate" title="Location">Location</div>
+                                </th>
+                                <th class="slds-text-title_caps slds-text-align_center" scope="col">
+                                    <div class="slds-truncate" title="Office">Office</div>
+                                </th>
+                                <th class="slds-text-title_caps slds-text-align_center" scope="col">
+                                    <div class="slds-truncate" title="Status">Status</div>
+                                </th>
+                                <th class="slds-text-title_caps slds-text-align_center" scope="col">
+                                    <div class="slds-truncate" title="Submitted">Submitted</div>
+                                </th>
+                                <th class="slds-text-title_caps" scope="col">
+                                    <div class="slds-truncate" title="Submit">Submit</div>
+                                </th>
+                            </tr>
+                        </thead>
+                     	<tbody>
+                        	<aura:iteration items="{!v.allCompensations}" var="comp" aura:id="data">  
+                            <c:Comp_Compensation_Table compensation="{!comp}"/>
+                            </aura:iteration>
+                       </tbody>	
+                    </table>
+             	</lightning:card>
+            </div>
+   		</div>
+    </div>
+</aura:component>

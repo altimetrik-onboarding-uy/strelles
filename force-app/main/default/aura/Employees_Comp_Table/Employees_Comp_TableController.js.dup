@@ -1,0 +1,50 @@
+({
+	doInit : function(component, event, helper) {
+        helper.doInit(component,event);
+	},
+
+    onChange: function (component, event, helper) {
+    	helper.onChange(component,event);
+    },
+
+    submitCompensation : function(component, event, helper){
+		var compensationList = component.get("v.selectedCompensations");
+        if (compensationList.length > 0){
+       		helper.submitCompensation(component, event);
+        }	
+    },
+
+    handleNotification : function(component, event, helper){
+        var flag = event.getParam("flag");
+        var compensationSelected = event.getParam("compensation");
+        var compensationList = component.get("v.selectedCompensations");
+       if (flag) {
+       	compensationList.push(compensationSelected);
+        }else {
+         //delete compensation with flag flase
+         helper.deleteCompensationUnchecked(component, compensationSelected, compensationList);
+        } 
+    }, 
+    
+    exportsTableCSV : function(component, event, helper){
+		helper.exportTableCSV(component, event);
+    },
+    
+    // ## function call on Click on the "Download As CSV" Button.
+    downloadCsv : function(component,event,helper){
+
+        var csv = helper.convertArrayOfObjectsToCSV(component,component.get("v.allCompensations"));   
+        if (csv == null){return;} 
+       	//this code works for chrome but not for other browsers like IE or Edge 
+        var csvFile = new Blob(["\ufeff",csv]); 
+        var downloadLink = document.createElement("a"); 
+        downloadLink.download = 'contacts.csv'; // CSV file Name* you can change it. [only name not .csv] 
+        downloadLink.href = window.URL.createObjectURL(csvFile); 
+        downloadLink.style.display = "none"; 
+        downloadLink.target = '_blank';  
+        document.body.appendChild(downloadLink); 
+        downloadLink.click(); // using click() js function to trigger download csv file
+
+      }
+    
+})
