@@ -18,19 +18,19 @@ public class customCompensationTableController {
         //Prepare query paramters
         sRecordType = '%'+ sRecordType +'%';
  		//If type have is not empty and status is
-        if(sRecordType != '' && sRecordSubmitted == ''){
+        if(!String.isBlank(sRecordType) && String.isBlank(sRecordSubmitted)){
             //Execute search query
             return [SELECT Id, Contact__r.Id, Contact__r.Name, Contact__r.Birthdate, Job_Category__c, RecordType.Name, Amount__c, 
             Location__c, Office__c, Submitted__c, Status__c FROM Compensation__c WHERE RecordType.Name LIKE :sRecordType];
         }
         //If type have is empty status is not
-        if(sRecordType == '' && sRecordSubmitted != ''){
+        if(String.isBlank(sRecordType) && !String.isBlank(sRecordSubmitted)){
             //Execute search query
             return [SELECT Contact__r.Id, Contact__r.Name, Contact__r.Birthdate, Job_Category__c, RecordType.Name, Amount__c, 
             Location__c, Office__c, Submitted__c, Status__c FROM Compensation__c WHERE Submitted__c = :Boolean.valueOf(sRecordSubmitted)];
          }
          //If both of them arent empty
-        if(sRecordType != '' && sRecordSubmitted != ''){
+        if(!String.isBlank(sRecordType) && !String.isBlank(sRecordSubmitted)){
             //Execute search query
             return [SELECT Contact__r.Id, Contact__r.Name, Contact__r.Birthdate, Job_Category__c, RecordType.Name, Amount__c, 
             Location__c, Office__c, Submitted__c, Status__c FROM Compensation__c WHERE RecordType.Name LIKE :sRecordType AND Submitted__c = :Boolean.valueOf(sRecordSubmitted)];  

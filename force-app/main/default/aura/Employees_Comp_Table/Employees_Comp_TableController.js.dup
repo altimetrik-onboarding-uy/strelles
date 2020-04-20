@@ -22,27 +22,12 @@
        	compensationList.push(compensationSelected);
         }else {
          //delete compensation with flag flase
-         helper.metodoHelperParaRefresh(component, compensationSelected, compensationList);
+         helper.deleteCompensationUnchecked(component, compensationSelected, compensationList);
         } 
     }, 
     
     exportsTableCSV : function(component, event, helper){
- 		var action = component.get("c.exportCSV");
-        action.setParams({sAllCompensations: component.get("v.allCompensations")});
-    	action.setCallback(this, function(response) {
-            var state = response.getState();
-            if (state === "ERROR"){
-                var errors = response.getError();
-                if(errors){
-                    if(errors[0]){
-                        console.log("Error message: " + errors[0].message);
-                    }
-                }else{
-                    console.log("Unknown error");
-                    }
-                }
-    	});
-         $A.enqueueAction(action);
+		helper.exportTableCSV(component, event);
     },
     
     // ## function call on Click on the "Download As CSV" Button.

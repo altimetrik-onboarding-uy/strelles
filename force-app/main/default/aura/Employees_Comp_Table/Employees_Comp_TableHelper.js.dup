@@ -61,13 +61,32 @@
          $A.enqueueAction(action);
     },
  
-    metodoHelperParaRefresh : function (component, compensationSelected, compensationList){
+    deleteCompensationUnchecked : function (component, compensationSelected, compensationList){
         // get index of compensation with id "n"
         var removeIndex = compensationList.map(function(item) { return item.id; }).indexOf(compensationSelected.Id);
         // remove object
         compensationList.splice(removeIndex, 1);
     },
     
+    exportsTableCSV : function(component, event){
+    	var action = component.get("c.exportCSV");
+        action.setParams({sAllCompensations: component.get("v.allCompensations")});
+    	action.setCallback(this, function(response) {
+            var state = response.getState();
+            if (state === "ERROR"){
+                var errors = response.getError();
+                if(errors){
+                    if(errors[0]){
+                        console.log("Error message: " + errors[0].message);
+                    }
+                }else{
+                    console.log("Unknown error");
+                    }
+                }
+    	});
+         $A.enqueueAction(action);
+    },
+   
     convertArrayOfObjectsToCSV : function(component,objectRecords){
         // declare variables
         var csvStringResult, counter, compensationKeys, columnDivider, lineDivider;
